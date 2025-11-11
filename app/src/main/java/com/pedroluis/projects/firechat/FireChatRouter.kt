@@ -8,6 +8,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.auth.FirebaseAuth
+import com.pedroluis.projects.firechat.commons.redirects.FireChatRoutes
+import com.pedroluis.projects.firechat.features.home.view.HomeScreen
 import com.pedroluis.projects.firechat.features.login.view.LoginScreen
 import com.pedroluis.projects.firechat.features.register.view.RegisterScreen
 
@@ -15,16 +17,22 @@ import com.pedroluis.projects.firechat.features.register.view.RegisterScreen
 fun MainApp() {
     Surface(modifier = Modifier.fillMaxSize()) {
         val navController = rememberNavController()
-        val currentUser = FirebaseAuth.getInstance().currentUser
-        val start = if (currentUser != null) "home" else "login"
-
-        NavHost(navController = navController, startDestination = start) {
-            composable("login") {
+        NavHost(navController = rememberNavController(), startDestination = getStartRoute()) {
+            composable(FireChatRoutes.Login.route) {
                 LoginScreen(navController)
             }
-            composable("register") {
+            composable(FireChatRoutes.Register.route) {
                 RegisterScreen(navController)
+            }
+            composable(FireChatRoutes.Home.route) {
+                HomeScreen(navController)
             }
         }
     }
+}
+
+private fun getStartRoute() = if (FirebaseAuth.getInstance().currentUser != null) {
+    FireChatRoutes.Home.route
+} else {
+    FireChatRoutes.Login.route
 }
