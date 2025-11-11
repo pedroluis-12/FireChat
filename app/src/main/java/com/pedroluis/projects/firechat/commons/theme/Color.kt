@@ -1,4 +1,4 @@
-package com.pedroluis.projects.firechat.ui.theme
+package com.pedroluis.projects.firechat.commons.theme
 
 import androidx.compose.ui.graphics.Color
 

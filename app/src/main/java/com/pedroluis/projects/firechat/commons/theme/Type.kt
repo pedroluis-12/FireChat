@@ -1,4 +1,4 @@
-package com.pedroluis.projects.firechat.ui.theme
+package com.pedroluis.projects.firechat.commons.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
