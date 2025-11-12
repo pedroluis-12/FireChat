@@ -4,4 +4,5 @@ sealed class FireChatRoutes(val route: String) {
     object Login : FireChatRoutes("login")
     object Register : FireChatRoutes("register")
     object Home : FireChatRoutes("home")
+    object chat : FireChatRoutes("chat")
 }
