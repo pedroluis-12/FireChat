@@ -9,8 +9,8 @@ class HomeUseCase(private val repository: HomeRepository) {
     suspend fun getListContacts(): HomeListUseCaseState = runCatching {
         val exec = repository.getContactList()
         return when {
-            !exec.isNullOrEmpty() -> HomeListUseCaseState.ListContacts(exec)
-            exec.isNullOrEmpty() -> HomeListUseCaseState.EmptyList
+            exec.isNotEmpty() -> HomeListUseCaseState.ListContacts(exec)
+            exec.isEmpty() -> HomeListUseCaseState.EmptyList
             else -> HomeListUseCaseState.Error
         }
     }.onFailure {

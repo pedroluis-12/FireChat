@@ -1,8 +1,8 @@
 package com.pedroluis.projects.firechat.features.home.view
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,10 +16,13 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -41,15 +44,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.google.firebase.auth.FirebaseAuth
+import com.pedroluis.projects.firechat.commons.redirects.FireChatRoutes
 import com.pedroluis.projects.firechat.commons.theme.DarkGrey
 import com.pedroluis.projects.firechat.features.home.viewmodel.HomeViewModel
 import com.pedroluis.projects.firechat.features.home.viewmodel.state.HomeViewModelState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(navController: NavHostController) {
+fun HomeScreen(navController: NavController) {
     val viewModel = hiltViewModel<HomeViewModel>()
     val channels = viewModel.state.collectAsState()
     val addChannel = remember {
@@ -80,50 +86,34 @@ fun HomeScreen(navController: NavHostController) {
         ) {
             LazyColumn {
                 item {
-                    Text(
-                        text = "Messages",
-                        color = Color.Gray,
-                        style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Black),
-                        modifier = Modifier.padding(16.dp)
-                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Messages",
+                            color = Color.Gray,
+                            style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Black),
+                            modifier = Modifier.padding(16.dp)
+                        )
+                        IconButton(onClick = {
+                            FirebaseAuth.getInstance().signOut()
+                            navController.navigate(FireChatRoutes.Login.route)
+                        }) {
+                            Image(imageVector = Icons.Filled.Logout, contentDescription = "send", colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(Color.Gray))
+                        }
+                    }
                 }
-
-                item {
-                    TextField(
-                        value = "",
-                        onValueChange = {},
-                        placeholder = { Text(text = "Search...") },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 8.dp)
-                            .clip(
-                                RoundedCornerShape(40.dp)
-                            ),
-                        textStyle = TextStyle(color = Color.LightGray),
-                        colors = TextFieldDefaults.colors().copy(
-                            focusedContainerColor = Color.Gray,
-                            unfocusedContainerColor = Color.Gray,
-                            focusedTextColor = Color.White,
-                            unfocusedTextColor = Color.White,
-                            focusedPlaceholderColor = Color.White,
-                            unfocusedPlaceholderColor = Color.White,
-                            focusedIndicatorColor = Color.White
-                        ),
-                        trailingIcon = {
-                            Icon(
-                                imageVector = Icons.Filled.Search, contentDescription = null
-                            )
-                        })
-                }
-
                 if (channels.value is HomeViewModelState.DisplayList) {
-                    items(items =(channels.value as HomeViewModelState.DisplayList).list) { channel ->
+                    items(items = (channels.value as HomeViewModelState.DisplayList).list) { channel ->
                         Column {
                             ChannelItem(
                                 channelName = channel.name,
                                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 2.dp),
                                 onClick = {
-                                    //navController.navigate("chat/${channel.id}&${channel.name}")
+                                    navController.navigate(
+                                        "${FireChatRoutes.Chat.route}/${channel.id}"
+                                    )
                                 })
                         }
                     }
