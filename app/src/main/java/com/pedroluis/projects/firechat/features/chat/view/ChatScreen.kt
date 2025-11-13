@@ -32,6 +32,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -113,7 +114,11 @@ fun ChatMessages(
                 onSendMessage(msg.value)
                 msg.value = ""
             }) {
-                Image(imageVector = Icons.Filled.Send, contentDescription = "send")
+                Image(
+                    imageVector = Icons.Filled.Send,
+                    contentDescription = "send",
+                    colorFilter = ColorFilter.tint(Color.White)
+                )
             }
         }
     }
@@ -123,7 +128,7 @@ fun ChatMessages(
 fun ChatBubble(message: ChatMessageModel) {
     val isCurrentUser = message.senderId == Firebase.auth.currentUser?.uid
     val bubbleColor = if (isCurrentUser) {
-        Purple
+        Color.Blue
     } else {
         DarkGrey
     }

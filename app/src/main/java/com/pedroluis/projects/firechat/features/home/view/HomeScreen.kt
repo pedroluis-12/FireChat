@@ -3,6 +3,7 @@ package com.pedroluis.projects.firechat.features.home.view
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,6 +17,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Send
@@ -37,6 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -73,8 +76,12 @@ fun HomeScreen(navController: NavController) {
                     .clickable {
                         addChannel.value = true
                     }) {
-                Text(
-                    text = "Add Channel", modifier = Modifier.padding(16.dp), color = Color.White
+
+                Image(
+                    modifier = Modifier.padding(16.dp),
+                    imageVector = Icons.Filled.Add,
+                    contentDescription = "send",
+                    colorFilter = ColorFilter.tint(Color.White)
                 )
             }
         }, containerColor = Color.White
@@ -88,7 +95,8 @@ fun HomeScreen(navController: NavController) {
                 item {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
                             text = "Messages",
@@ -98,9 +106,17 @@ fun HomeScreen(navController: NavController) {
                         )
                         IconButton(onClick = {
                             FirebaseAuth.getInstance().signOut()
-                            navController.navigate(FireChatRoutes.Login.route)
+                            navController.navigate(FireChatRoutes.Login.route) {
+                                popUpTo(FireChatRoutes.Home.route) {
+                                    inclusive = true
+                                }
+                            }
                         }) {
-                            Image(imageVector = Icons.Filled.Logout, contentDescription = "send", colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(Color.Gray))
+                            Image(
+                                imageVector = Icons.Filled.Logout,
+                                contentDescription = "send",
+                                colorFilter = ColorFilter.tint(Color.Gray)
+                            )
                         }
                     }
                 }
@@ -122,7 +138,10 @@ fun HomeScreen(navController: NavController) {
         }
 
         if (addChannel.value) {
-            ModalBottomSheet(onDismissRequest = { addChannel.value = false }, sheetState = sheetState) {
+            ModalBottomSheet(
+                onDismissRequest = { addChannel.value = false },
+                sheetState = sheetState
+            ) {
                 AddChannelDialog {
                     viewModel.addContact(it)
                     addChannel.value = false
@@ -157,7 +176,7 @@ fun ChannelItem(
                     .padding(8.dp)
                     .size(70.dp)
                     .clip(CircleShape)
-                    .background(Color.Yellow.copy(alpha = 0.3f))
+                    .background(Color.Blue)
 
             ) {
                 Text(
